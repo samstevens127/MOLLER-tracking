@@ -1,0 +1,10 @@
+[package]
+name = "residuals"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+nalgebra = "0.34.1"
+indicatif= "0.18.0"
+toml	 = "0.9.8"
+serde = { version = "1.0.228", features = ["derive"] }

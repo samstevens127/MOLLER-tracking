@@ -1,0 +1,5 @@
+/home/me/syncthing/homework/lab/testing/target/release/build/matrixmultiply-0f12d1c8ea426f6f/build_script_build-0f12d1c8ea426f6f.d: /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/matrixmultiply-0.3.10/build.rs
+
+/home/me/syncthing/homework/lab/testing/target/release/build/matrixmultiply-0f12d1c8ea426f6f/build_script_build-0f12d1c8ea426f6f: /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/matrixmultiply-0.3.10/build.rs
+
+/home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/matrixmultiply-0.3.10/build.rs:
