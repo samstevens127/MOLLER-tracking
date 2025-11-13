@@ -25,7 +25,7 @@ fn gradient(data: &mut Vec<Vec<f64>>) -> f64 {
 
     (chi2p - chi2m) / (2.0 * epsilon)
 }
-
+#[cfg_attr(feature = "hotpath", hotpath::measure)]
 fn gradient_2d(data: &mut HashMap<u32, Vec<Event>>) -> Vec<f64> {
     let epsilon = 1e-6;
 
@@ -140,7 +140,7 @@ fn chi2_fit_1d(data: &Vec<Vec<f64>>) -> f64 {
 
 
 }
-
+#[cfg_attr(feature = "hotpath", hotpath::measure)]
 fn chi2_fit(data: &HashMap<u32, Vec<Event>>) -> Vec<f64> {
     let n_pts: usize = 3;
     let mut total_chi_sqr: Vec<f64> = vec![0.0, 0.0];
