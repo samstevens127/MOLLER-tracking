@@ -1,5 +1,4 @@
 use crate::types::*;
-use rayon::prelude::*;
 use nalgebra as na;
 use std::collections::HashMap;
 use na::{Vector3,matrix};
