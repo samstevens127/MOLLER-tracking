@@ -3,8 +3,6 @@ pub static Z: &[f64]  = &[0.0,180.0,700.0];
 
 #[derive(Debug, Clone)]
 pub struct Event {
-    pub x: f64,
-    pub y: f64,
     pub hadc: u16,
     pub ladc: u16,
     pub hv: u16,
