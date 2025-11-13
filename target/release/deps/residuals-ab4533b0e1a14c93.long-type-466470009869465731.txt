@@ -1,1 +1,0 @@
-for<'b> &'b plotters::element::Circle<(f64, f64), {integer}>: PointCollection<'b, (f64, i32)>
