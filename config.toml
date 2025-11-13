@@ -1,3 +1,7 @@
 [data_file]
-data_path = "/home/me/syncthing/homework/lab/sorting_output/"
+# set path to data. e.g "/home/foo/bar_data/"
+data_path = "/home/me/syncthing/homework/lab"
+# set datafile name. e.g "foo_1234.txt" 
 filename = "output_file_run_4162_4177"
+
+
