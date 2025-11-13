@@ -6,33 +6,61 @@ use na::{Vector3,matrix};
 
 const GEM: usize = 1; // GEM TO SHIFT
 
-fn gradient_2d(data: &HashMap<u32, Vec<Event>>) -> Vec<f64> {
+//TODO rewrite this for 1D
+//some thoughts: this function only perturbs one GEM
+fn gradient(data: &mut Vec<Vec<f64>>) -> f64 {
+    let epsilon: f64 = 1e-6;
+
+    for elem in data.iter_mut() {
+        elem[GEM] += epsilon;
+    }
+
+    let chi2p = chi2_fit_1d(&*data);
+
+    for elem in data.iter_mut() {
+        elem[GEM] -= epsilon;
+    }
+
+    let chi2m = chi2_fit_1d(&*data);
+
+    (chi2p - chi2m) / (2.0 * epsilon)
+}
+
+fn gradient_2d(data: &mut HashMap<u32, Vec<Event>>) -> Vec<f64> {
     let epsilon = 1e-6;
 
-    // Perturb x 
-    let mut plus_x = data.clone();
-    let mut minus_x = data.clone();
-    for events in plus_x.values_mut() {
+    // +epsilon on x
+    for events in data.values_mut() {
         events[GEM].x += epsilon;
     }
-    for events in minus_x.values_mut() {
-        events[GEM].x -= epsilon;
+    let chi2p_x = chi2_fit(&*data); // immutable borrow after mutable borrow ends
+
+    // move to -epsilon on x (subtract 2*epsilon)
+    for events in data.values_mut() {
+        events[GEM].x -= 2.0 * epsilon;
+    }
+    let chi2m_x = chi2_fit(&*data);
+
+    // restore original x (+epsilon)
+    for events in data.values_mut() {
+        events[GEM].x += epsilon;
     }
 
-    // Perturb y 
-    let mut plus_y = data.clone();
-    let mut minus_y = data.clone();
-    for events in plus_y.values_mut() {
+    // same for y
+    for events in data.values_mut() {
         events[GEM].y += epsilon;
     }
-    for events in minus_y.values_mut() {
-        events[GEM].y -= epsilon;
-    }
+    let chi2p_y = chi2_fit(&*data);
 
-    let chi2p_x = chi2_fit(&plus_x);
-    let chi2m_x = chi2_fit(&minus_x);
-    let chi2p_y = chi2_fit(&plus_y);
-    let chi2m_y = chi2_fit(&minus_y);
+    for events in data.values_mut() {
+        events[GEM].y -= 2.0 * epsilon;
+    }
+    let chi2m_y = chi2_fit(&*data);
+
+    // restore y
+    for events in data.values_mut() {
+        events[GEM].y += epsilon;
+    }
 
     vec![
         (chi2p_x[0] - chi2m_x[0]) / (2.0 * epsilon),
@@ -76,6 +104,42 @@ pub fn collect_errors(data: &HashMap<u32, Vec<Event>>, errors: &mut HashMap<u32,
      
 }
 
+
+// TODO rewrite this for 1D
+fn chi2_fit_1d(data: &Vec<Vec<f64>>) -> f64 {
+    let n_pts: usize = 3;
+    let mut total_chi_sqr: f64 = 0.0;
+    let z_vec = Vector3::new(Z[0],Z[1],Z[2]);
+
+    for event in data {
+        let x_mat = matrix![
+            event[0], 1.0;
+            event[1], 1.0;
+            event[2], 1.0
+        ];
+
+        let svd_x = x_mat.svd(true, true);
+
+        let sln_x = svd_x.solve(&z_vec, 1e-10).expect("SVD solve failed for x");
+
+        let slope_x = sln_x[0];
+        let intercept_x = sln_x[1];
+
+        let sigma: f64 = 1.0;
+
+        for i in 0..n_pts {
+            let pred_x = slope_x * event[i] + intercept_x;
+
+            total_chi_sqr += (Z[i] - pred_x).powi(2) / sigma.powi(2);
+        }
+    }
+
+    total_chi_sqr /= data.len() as f64;
+
+    total_chi_sqr
+
+
+}
 
 fn chi2_fit(data: &HashMap<u32, Vec<Event>>) -> Vec<f64> {
     let n_pts: usize = 3;

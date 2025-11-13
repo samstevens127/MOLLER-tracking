@@ -1,0 +1,1 @@
+for<'b> &'b plotters::element::Rectangle<(f64, i32)>: PointCollection<'b, (f64, usize)>

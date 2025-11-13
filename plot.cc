@@ -145,7 +145,6 @@ void plot()
 
 	while (file >> c1>>x1>>y1>>z1>>x2>>y2>>z2>>x3>>y3>>z3)
 	{
-		cout << x1 << " " << x2 << " " << x3 << endl;
 		x1_vec.push_back(x1);
 		x2_vec.push_back(x2);
 		x3_vec.push_back(x3);

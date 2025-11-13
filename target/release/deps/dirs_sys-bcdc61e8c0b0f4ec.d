@@ -1,0 +1,8 @@
+/home/me/syncthing/homework/lab/testing/target/release/deps/dirs_sys-bcdc61e8c0b0f4ec.d: /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/lib.rs /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/xdg_user_dirs.rs
+
+/home/me/syncthing/homework/lab/testing/target/release/deps/libdirs_sys-bcdc61e8c0b0f4ec.rlib: /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/lib.rs /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/xdg_user_dirs.rs
+
+/home/me/syncthing/homework/lab/testing/target/release/deps/libdirs_sys-bcdc61e8c0b0f4ec.rmeta: /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/lib.rs /home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/xdg_user_dirs.rs
+
+/home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/lib.rs:
+/home/me/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/dirs-sys-0.5.0/src/xdg_user_dirs.rs:

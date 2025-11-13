@@ -7,7 +7,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Config{
-    pub data_file: DataFile,
+    data_file: DataFile,
 }
 
 #[derive(Debug,Deserialize)]
