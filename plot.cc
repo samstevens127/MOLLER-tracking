@@ -161,7 +161,7 @@ void plot()
 
 	cout << x[0].size() << endl;
 	cout << x_err[0].size() << endl;
-	extract_gauss_mean("GEM-I",  y[0], -50,50);
-	extract_gauss_mean("GEM-II", y[1], -50,50);
-	extract_gauss_mean("GEM-III",y[2], -50,50);
+	extract_gauss_mean("GEM-I",  y[0], -500,500);
+	extract_gauss_mean("GEM-II", y[1], -500,500);
+	extract_gauss_mean("GEM-III",y[2], -500,500);
 }

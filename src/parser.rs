@@ -24,7 +24,7 @@ pub fn parse_config() -> Result<Config, Box<dyn std::error::Error>>
         Ok(config)
 }
 
-fn next_event(reader: &mut BufReader<File>) -> Option<(u32,Event)> // returns eventnum and event
+fn next_event(reader: &mut BufReader<File>) -> Option<(u32,f64,f64,Event)> // returns eventnum and event
 {
     let mut line = String::new();
 
@@ -46,7 +46,7 @@ fn next_event(reader: &mut BufReader<File>) -> Option<(u32,Event)> // returns ev
         let run_num: u16   = match data[7].parse() {Ok(v) => v, Err(_) => break};
         let hv: u16        = match data[8].parse() {Ok(v) => v, Err(_) => break};
 
-        return Some((event_num, Event {x, y, hadc, ladc, hv, run_num}));
+        return Some((event_num,x, y, Event { hadc, ladc, hv, run_num}));
         
     }
 
@@ -54,7 +54,7 @@ fn next_event(reader: &mut BufReader<File>) -> Option<(u32,Event)> // returns ev
 }
 
 
-pub fn parse_data(config: &Config) -> Result<HashMap<u32,Vec<Event>>,Box<dyn std::error::Error> >
+pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>)
 {
 
         let filenames = vec![
@@ -64,7 +64,9 @@ pub fn parse_data(config: &Config) -> Result<HashMap<u32,Vec<Event>>,Box<dyn std
     ];
 
 
-    let mut events: HashMap<u32, Vec<Event>> = HashMap::new();
+    let mut x: Vec<Vec<f64>> = Vec::new();
+    let mut y: Vec<Vec<f64>> = Vec::new();
+    let mut event_nums: Vec<u32> = Vec::new();
 
     let mut readers: Vec<_> = filenames
         .iter()
@@ -72,7 +74,7 @@ pub fn parse_data(config: &Config) -> Result<HashMap<u32,Vec<Event>>,Box<dyn std
         .collect();
 
     // Get the first event from each file
-    let mut current: Vec<Option<(u32, Event)>> = readers
+    let mut current: Vec<Option<(u32,f64,f64, Event)>> = readers
         .iter_mut()
         .map(|r| next_event(r))
         .collect();
@@ -80,17 +82,19 @@ pub fn parse_data(config: &Config) -> Result<HashMap<u32,Vec<Event>>,Box<dyn std
 
     /* read input files and sort for events that hit all GEMs and populate HashMap events with them*/
     while current.iter().all(|c| c.is_some()){
-        let event_nums: Vec<u32> = current.iter().map(|c| c.as_ref().unwrap().0).collect();
-        let min_event = *event_nums.iter().min().unwrap();
-        let max_event = *event_nums.iter().max().unwrap();
+        let event_num: Vec<u32> = current.iter().map(|c| c.as_ref().unwrap().0).collect();
+        let min_event = *event_num.iter().min().unwrap();
+        let max_event = *event_num.iter().max().unwrap();
 
         if min_event == max_event {
             // Found common event
-            let datas: Vec<Event> = current.iter().map(|c| c.as_ref().unwrap().1.clone()).collect();
+            let x_event: Vec<f64> = current.iter().map(|c| c.as_ref().unwrap().1.clone()).collect();
+            let y_event: Vec<f64> = current.iter().map(|c| c.as_ref().unwrap().2.clone()).collect();
 
              
-            // add to event map
-            events.insert(min_event,datas);
+            event_nums.push(event_num[0]);
+            x.push(x_event);
+            y.push(y_event);
 
             // Advance all readers
             for (i, r) in readers.iter_mut().enumerate() {
@@ -105,7 +109,7 @@ pub fn parse_data(config: &Config) -> Result<HashMap<u32,Vec<Event>>,Box<dyn std
             }
         }
     }
-    println!("{} Events hit all 3 GEMs.", events.len());
+    println!("{} Events hit all 3 GEMs.", x.len());
 
-    Ok(events)
+    (event_nums, x, y)
 }
