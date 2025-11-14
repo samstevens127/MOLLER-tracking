@@ -32,7 +32,6 @@ fn gradient(data: &mut Vec<Vec<f64>>) -> f64 {
 }
 
 pub fn collect_errors(data: &Vec<Vec<f64>>, errors: &mut Vec<Vec<f64>>) {
->>>>>>> testing
 
     for datas in data.iter(){
         
