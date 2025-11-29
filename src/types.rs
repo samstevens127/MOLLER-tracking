@@ -9,10 +9,5 @@ pub struct Event {
     pub run_num: u16,
 }
 
-#[derive(Debug)]
-pub struct Error {
-    pub x: Vec<f64>,
-    pub y: Vec<f64>
-}
 
 
