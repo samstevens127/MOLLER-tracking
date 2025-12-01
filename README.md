@@ -23,6 +23,7 @@ then run `./release/residuals`
 
 `plotting.cc` is there if you want to check the residuals after correction.
 
+Note: The program cannot find `config.toml` unless you are in the root directory of the repo
 ## TODO
 
 - add other scripts (pedcal, sorting)
