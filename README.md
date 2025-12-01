@@ -24,9 +24,6 @@ then run `./release/residuals`
 ## TODO
 
 - add other scripts (pedcal, sorting)
-- rewrite gradient descent for running in parallel
 - add more to the config
-  - outputfile names/location
-  - Z values
   - ability to change max iterations of gradient descent
   - ability to change epsilon for finite difference
