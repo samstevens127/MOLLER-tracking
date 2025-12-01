@@ -4,7 +4,9 @@
 
 Takes input data with 9 columns in the format (event num, x, y, x_charge, y_charge, hadc, ladc, run_num, high_voltage).
 
-Aligns the GEM planes to improve residuals, then output the corrected hit positions to corrected_xy.txt
+Aligns the GEM planes to improve residuals, then output the corrected hit positions and residuals to an output directory specified in `config.toml`.
+
+Calculates the angle distribution of the hits.
 
 ## Installation.
 ```
