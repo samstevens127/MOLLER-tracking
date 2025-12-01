@@ -6,13 +6,24 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Config{
-    data_file: DataFile,
+    pub residuals: Residuals,
+    pub angles: Angles,
 }
 
 #[derive(Debug,Deserialize)]
-struct DataFile {
-    data_path: String,
-    filename: String,
+pub struct Residuals {
+    pub exec : bool,
+    pub outpath: String,
+    pub run_num: String,
+    inpath: String,
+    infile: String,
+}
+
+#[derive(Debug,Deserialize)]
+pub struct Angles {
+    pub exec : bool,
+    pub outpath: String,
+    pub run_num: String
 }
 
 pub fn parse_config() -> Result<Config, Box<dyn std::error::Error>>
@@ -23,9 +34,70 @@ pub fn parse_config() -> Result<Config, Box<dyn std::error::Error>>
         Ok(config)
 }
 
+pub fn parse_align(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<f64>, Vec<Event>), Box<dyn std::error::Error>> {
+    let mut line = String::new();
+
+    let file = format!("{}/x_y_corrected_{}.txt", config.residuals.outpath, config.residuals.run_num);
+
+    println!["Calculating angles from '{}'", file];
+
+    let mut reader = BufReader::new(File::open(file).unwrap());
+
+    let mut event_nums: Vec<u32> = Vec::new();
+
+    let mut x: Vec<Vec<f64>> = Vec::new();
+    let mut y: Vec<Vec<f64>> = Vec::new();
+    let mut z: Vec<f64> = vec![0.0, 0.0, 0.0];
+
+    let mut adc: Vec<Event> = Vec::new();
+
+    loop {
+        line.clear();
+        reader.read_line(&mut line)?;
+
+        let mut x_events: Vec<f64> = Vec::with_capacity(3);
+        let mut y_events: Vec<f64> = Vec::with_capacity(3);
+
+        let data: Vec<&str> = line.split_whitespace().collect();
+
+        let event_num: u32 = match data[0].parse() {Ok(v) => v, Err(_) => break};
+        let x_1: f64 = match data[1].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let y_1: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let z_1: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let x_2: f64 = match data[1].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let y_2: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let z_2: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let x_3: f64 = match data[1].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let y_3: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let z_3: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let hadc: u16      = match data[5].parse() {Ok(v) => v, Err(_) => break};
+        let ladc: u16      = match data[6].parse() {Ok(v) => v, Err(_) => break};
+        let run_num: u16   = match data[7].parse() {Ok(v) => v, Err(_) => break};
+        let hv: u16        = match data[8].parse() {Ok(v) => v, Err(_) => break};
+
+        x_events.push(x_1);
+        x_events.push(x_2);
+        x_events.push(x_3);
+        x.push(x_events);
+
+        y_events.push(y_1);
+        y_events.push(y_2);
+        y_events.push(y_3);
+        y.push(y_events);
+
+        z = vec![z_1,z_2,z_3];
+
+        event_nums.push(event_num);
+        adc.push(Event{ hadc, ladc, hv, run_num })
+    }
+
+    Ok((event_nums, x, y, z, adc))
+}
+
 fn next_event(reader: &mut BufReader<File>) -> Option<(u32,f64,f64,Event)> // returns eventnum and event
 {
     let mut line = String::new();
+
 
     loop {
         line.clear();
@@ -57,9 +129,9 @@ pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>, Ve
 {
 
         let filenames = vec![
-        format!("{}/{}_x1y1.txt",config.data_file.data_path, config.data_file.filename),
-        format!("{}/{}_x2y2.txt",config.data_file.data_path, config.data_file.filename),
-        format!("{}/{}_x3y3.txt",config.data_file.data_path, config.data_file.filename)
+        format!("{}/output_file_run_{}_x1y1.txt",config.residuals.inpath, config.residuals.infile),
+        format!("{}/output_file_run_{}_x2y2.txt",config.residuals.inpath, config.residuals.infile),
+        format!("{}/output_file_run_{}_x3y3.txt",config.residuals.inpath, config.residuals.infile)
     ];
 
 

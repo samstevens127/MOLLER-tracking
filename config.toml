@@ -1,7 +1,24 @@
-[data_file]
+[residuals]
 # set path to data. e.g "/home/foo/bar_data/"
-data_path = "/home/me/syncthing/homework/lab/sorting_output"
+inpath = "/home/me/syncthing/homework/lab/sorting_output"
 # set datafile name. e.g "foo_1234.txt" 
-filename = "output_file_run_4162_4177"
+infile = "4162_4177"
+
+#set path to output
+outpath = "/home/me/syncthing/homework/lab/residual_output"
+#set run number of output file. file is in format x_y_corrected_{run_num}.txt
+run_num = "4162_4177"
+
+# set true to calculate residuals and align GEMs
+exec = true
+[angles]
+
+#set path to output
+outpath = "/home/me/syncthing/homework/lab/angles_output"
+#set run number of output file. file is in format angles_{run_num}.txt
+run_num = "4162_4177"
+
+# set true to calculate angle distribution
+exec = false
 
 

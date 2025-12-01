@@ -43,13 +43,13 @@ pub fn calculate_angles(config: &Config,
         angles_y.push(angle_y);
     }
 
-    let angle_file = File::create("angles.txt")?;
+    let angle_file = File::create(format!("{}/angles_{}.txt", config.angles.outpath, config.angles.run_num))?;
     let mut angle_writer = BufWriter::new(angle_file);
 
     for i in 0..event_nums.len() {
-        writeln![angle_writer, "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t", event_nums[i], angles[i], angles_x[i], angles_y[i],events[i].hadc,events[i].ladc,events[i].hv,events[i].run_num];
+        writeln![angle_writer, "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t", event_nums[i], angles[i], angles_x[i], angles_y[i],events[i].hadc,events[i].ladc,events[i].hv,events[i].run_num]?;
     }
-        writeln![angle_writer, "event_num\tpolar_angle\tx_angle\ty_angle\thadc\tladc\thv\trun_num"];
+        writeln![angle_writer, "event_num\tpolar_angle\tx_angle\ty_angle\thadc\tladc\thv\trun_num"]?;
 
     Ok(())
 }

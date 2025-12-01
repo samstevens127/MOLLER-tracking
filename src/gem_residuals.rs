@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufWriter, Write};
+use std::io::{self, BufWriter, Write};
 use crate::types::*;
 use crate::parser::{Config,parse_data};
 use nalgebra as na;
@@ -110,10 +110,11 @@ fn gradient_descent(data: &mut Vec<Vec<f64>>) -> (f64, u64)
         grad = gradient(data); 
             if counter % 10 == 0 {
         let chi2 = chi2_fit(data);
-        println!(
-            "Iter {:4}: grad=({:+.6e}), shift=({:+.4}), χ²=({:.6})",
+        print!(
+            "\rIter {:4}: grad=({:+.6e}), shift=({:+.4}), χ²=({:.6})",
             counter, grad, shift, chi2
         );
+        io::stdout().flush().unwrap();
     }
 
         for  event in data.iter_mut()
@@ -133,6 +134,7 @@ pub fn align_gems(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f
 
     let (event_nums, mut x_vals, mut y_vals, events) = parse_data(&config);
 
+    // for outfiles later
     println!("Data and config successfully parsed! Beginning data correction:");
 
     let (output_x, output_y) = rayon::join(
@@ -144,15 +146,19 @@ pub fn align_gems(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f
 
     let shift_y = output_y.0;
     let counter_y = output_y.1;
-    println!("GEM 2 shifted {} mm in X, {} mm in Y, after {} iterations.", shift_x, shift_y, counter_y + counter_x);
+    io::stdout().flush().unwrap();
+    println!("\rGEM 2 shifted {} mm in X, {} mm in Y, after {} iterations.", shift_x, shift_y, counter_y + counter_x);
 
     let (x_err, y_err) = rayon::join(
         || collect_errors(&x_vals),
         || collect_errors(&y_vals),
     );
 
-    let residuals = File::create("x_y_residuals.txt")?;
-    let corrected = File::create("x_y_corrected.txt")?;
+
+    let f_residuals = format!("{}/x_y_residuals_{}.txt",config.residuals.outpath, config.residuals.run_num);
+    let f_corrected = format!("{}/x_y_corrected_{}.txt",config.residuals.outpath, config.residuals.run_num);
+    let residuals = File::create(f_residuals)?;
+    let corrected = File::create(f_corrected)?;
 
     let mut residuals_writer = BufWriter::new(residuals);
     let mut corrected_writer = BufWriter::new(corrected);
