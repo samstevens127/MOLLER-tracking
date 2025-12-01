@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::fs::{File,read_to_string};
 use std::io::{BufRead, BufReader};
 
@@ -54,7 +53,7 @@ fn next_event(reader: &mut BufReader<File>) -> Option<(u32,f64,f64,Event)> // re
 }
 
 
-pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>)
+pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>, Vec<Event>)
 {
 
         let filenames = vec![
@@ -66,6 +65,7 @@ pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>)
 
     let mut x: Vec<Vec<f64>> = Vec::new();
     let mut y: Vec<Vec<f64>> = Vec::new();
+    let mut adcs: Vec<Event> = Vec::new();
     let mut event_nums: Vec<u32> = Vec::new();
 
     let mut readers: Vec<_> = filenames
@@ -83,6 +83,7 @@ pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>)
     /* read input files and sort for events that hit all GEMs and populate HashMap events with them*/
     while current.iter().all(|c| c.is_some()){
         let event_num: Vec<u32> = current.iter().map(|c| c.as_ref().unwrap().0).collect();
+        let adc: Vec<Event> = current.iter().map(|c| c.as_ref().unwrap().3).collect();
         let min_event = *event_num.iter().min().unwrap();
         let max_event = *event_num.iter().max().unwrap();
 
@@ -93,6 +94,7 @@ pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>)
 
              
             event_nums.push(event_num[0]);
+            adcs.push(adc[0]);
             x.push(x_event);
             y.push(y_event);
 
@@ -111,5 +113,5 @@ pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>)
     }
     println!("{} Events hit all 3 GEMs.", x.len());
 
-    (event_nums, x, y)
+    (event_nums, x, y, adcs)
 }

@@ -1,41 +1,41 @@
+use std::fs::File;
+use std::io::{BufWriter, Write};
 use crate::types::*;
 use crate::parser::{Config,parse_data};
 use nalgebra as na;
-use std::collections::HashMap;
 use na::{Vector3,matrix};
 
 const GEM: usize = 1; // GEM TO SHIFT
 
-#[cfg_attr(feature = "hotpath", hotpath::measure)]
+
+// gradient with midpoint method
 fn gradient(data: &mut Vec<Vec<f64>>) -> f64 {
     let epsilon: f64 = 1e-6;
 
-    // Apply perturbations sequentially
     for row in data.iter_mut() {
         row[GEM] += epsilon;
     }
 
-    let chi2p = chi2_fit_1d(&data);
+    let chi2p = chi2_fit(&data);
 
     for row in data.iter_mut() {
         row[GEM] -= 2.0 * epsilon;
     }
 
-    // Compute chi2 sequentially
-    let chi2m = chi2_fit_1d(&data);
+    let chi2m = chi2_fit(&data);
 
     for row in data.iter_mut() {
         row[GEM] += epsilon;
     }
 
-    // Finite difference gradient
     (chi2p - chi2m) / (2.0 * epsilon)
 }
 
+//collect residuals
 fn collect_errors(data: &Vec<Vec<f64>>) -> Vec<Vec<f64>>{
 
     let mut errors: Vec<Vec<f64>> = Vec::with_capacity(data.len());
-    for (j,datas )in data.iter().enumerate(){
+    for datas in data.iter(){
         
         let x: Vec<f64> = (0..3).map(|i| {
             let x1 = datas[(i + 1) % 3];
@@ -51,15 +51,15 @@ fn collect_errors(data: &Vec<Vec<f64>>) -> Vec<Vec<f64>>{
             (slope * z3 + intercept) - x3
         }).collect();
 
-        errors[j] = x;
+        errors.push(x);
     }
      
     errors
 }
 
 
-// TODO rewrite this for 1D
-fn chi2_fit_1d(data: &Vec<Vec<f64>>) -> f64 {
+// return average chi2 value of fit for each event
+fn chi2_fit(data: &Vec<Vec<f64>>) -> f64 {
     let n_pts: usize = 3;
     let mut total_chi_sqr: f64 = 0.0;
     let z_vec = Vector3::new(Z[0],Z[1],Z[2]);
@@ -94,6 +94,7 @@ fn chi2_fit_1d(data: &Vec<Vec<f64>>) -> f64 {
 
 }
 // returns shift in X and Y
+// TODO: take num_itr and learning_rate as parameters
 fn gradient_descent(data: &mut Vec<Vec<f64>>) -> (f64, u64) 
 {
     let learning_rate: f64 = 5e-5;
@@ -108,7 +109,7 @@ fn gradient_descent(data: &mut Vec<Vec<f64>>) -> (f64, u64)
         
         grad = gradient(data); 
             if counter % 10 == 0 {
-        let chi2 = chi2_fit_1d(data);
+        let chi2 = chi2_fit(data);
         println!(
             "Iter {:4}: grad=({:+.6e}), shift=({:+.4}), χ²=({:.6})",
             counter, grad, shift, chi2
@@ -127,8 +128,10 @@ fn gradient_descent(data: &mut Vec<Vec<f64>>) -> (f64, u64)
     (shift,counter)
 }
 
-pub fn align_gems(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
-    let (event_nums, mut x_vals, mut y_vals) = parse_data(&config);
+// TODO make it take z vector
+pub fn align_gems(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Event>), Box<dyn std::error::Error>> {
+
+    let (event_nums, mut x_vals, mut y_vals, events) = parse_data(&config);
 
     println!("Data and config successfully parsed! Beginning data correction:");
 
@@ -141,8 +144,23 @@ pub fn align_gems(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
 
     let shift_y = output_y.0;
     let counter_y = output_y.1;
-    println!("GEM 2 shifted {} mm in X, {} mm in Y, after {} iterations.", shift_x, shift_y, counter_y);
+    println!("GEM 2 shifted {} mm in X, {} mm in Y, after {} iterations.", shift_x, shift_y, counter_y + counter_x);
 
-    Ok(())
+    let (x_err, y_err) = rayon::join(
+        || collect_errors(&x_vals),
+        || collect_errors(&y_vals),
+    );
 
+    let residuals = File::create("x_y_residuals.txt")?;
+    let corrected = File::create("x_y_corrected.txt")?;
+
+    let mut residuals_writer = BufWriter::new(residuals);
+    let mut corrected_writer = BufWriter::new(corrected);
+
+    for i in 0..event_nums.len() {
+        writeln!(residuals_writer, "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t", event_nums[i], x_err[i][0],y_err[i][0],Z[0], x_err[i][1],y_err[i][1],Z[1], x_err[i][2],y_err[i][2],Z[2])?;
+        writeln!(corrected_writer, "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t", event_nums[i], x_vals[i][0],y_vals[i][0],Z[0], x_vals[i][1],y_vals[i][1],Z[1], x_vals[i][2],y_vals[i][2],Z[2], events[i].hadc,events[i].ladc,events[i].hv,events[i].run_num)?;
+    }
+
+    Ok((event_nums, x_vals, y_vals, events))
 }

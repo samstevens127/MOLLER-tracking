@@ -1,14 +1,10 @@
 mod gem_residuals;
-mod parser;
 mod types;
+mod angles;
+mod parser;
 
-use std::collections::HashMap;
-use std::fs::File;
 use std::io::{BufWriter, Write};
-use rayon::prelude::*;
-use crate::types::*;
-use crate::parser::*;
-use crate::gem_residuals::align_gems;
+use crate::types::Event;
 
 
 
@@ -19,7 +15,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // read config.toml
     let config = parser::parse_config()?;
 
-    gem_residuals::align_gems(&config)?;
+    let (event_nums, x, y, events): (Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Event>) = gem_residuals::align_gems(&config)?;
+    println!["GEMs aligned!"];
+
+    let z = vec![0.0,180.0,700.0];
+    angles::calculate_angles(&config,&event_nums, &x, &y, &z, &events)?;
 
     Ok(())
 }

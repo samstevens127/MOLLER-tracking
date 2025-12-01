@@ -137,7 +137,7 @@ double extract_gauss_mean(const string var_name, vector<double> &v1, const doubl
 
 void plot()
 {
-	std::string filename = "corrected_x_y.txt";
+	std::string filename = "x_y_residuals.txt";
 	std::ifstream file(filename);
 	double c1,x1,y1,z1,x2,y2,z2,x3,y3,z3;
 
