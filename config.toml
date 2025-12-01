@@ -1,11 +1,10 @@
 [residuals]
-
 # Z of GEMs. Increasing or decreasing order.
 z = [0.0, 180.0, 700.0]
 
 # set path to data. e.g "/home/foo/bar_data/"
 inpath = "/home/me/syncthing/homework/lab/sorting_output"
-# set datafile run number. data data file looks like 'output_file_run_{infile}.txt'
+# set datafile run number. Data file looks like 'output_file_run_{infile}.txt'
 infile = "4162_4177"
 
 #set path to output
@@ -17,7 +16,6 @@ run_num = "4162_4177"
 exec = true
 
 [angles]
-
 #set path to output
 outpath = "/home/me/syncthing/homework/lab/angles_output"
 #set run number of output file. file is in format angles_{run_num}.txt
