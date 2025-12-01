@@ -5,7 +5,7 @@ z = [0.0, 180.0, 700.0]
 
 # set path to data. e.g "/home/foo/bar_data/"
 inpath = "/home/me/syncthing/homework/lab/sorting_output"
-# set datafile name. e.g "foo_1234.txt" 
+# set datafile run number. data data file looks like 'output_file_run_{infile}.txt'
 infile = "4162_4177"
 
 #set path to output
@@ -15,6 +15,7 @@ run_num = "4162_4177"
 
 # set true to calculate residuals and align GEMs
 exec = true
+
 [angles]
 
 #set path to output
