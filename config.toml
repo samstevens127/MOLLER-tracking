@@ -1,4 +1,8 @@
 [residuals]
+
+# Z of GEMs. Increasing or decreasing order.
+z = [0.0, 180.0, 700.0]
+
 # set path to data. e.g "/home/foo/bar_data/"
 inpath = "/home/me/syncthing/homework/lab/sorting_output"
 # set datafile name. e.g "foo_1234.txt" 

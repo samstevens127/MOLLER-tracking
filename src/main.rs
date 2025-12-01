@@ -1,12 +1,8 @@
 mod gem_residuals;
-mod types;
 mod angles;
 mod parser;
 
-use crate::types::Event;
-
-
-
+use crate::parser::Event;
 
 #[cfg_attr(feature = "hotpath", hotpath::main(percentiles = [99]))]
 fn main() -> Result<(), Box<dyn std::error::Error>> {

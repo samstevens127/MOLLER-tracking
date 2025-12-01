@@ -1,8 +1,15 @@
 use std::fs::{File,read_to_string};
 use std::io::{BufRead, BufReader};
 
-use crate::types::*;
 use serde::Deserialize;
+
+#[derive(Debug, Clone, Copy)]
+pub struct Event {
+    pub hadc: u16,
+    pub ladc: u16,
+    pub hv: u16,
+    pub run_num: u16,
+}
 
 #[derive(Debug, Deserialize)]
 pub struct Config{
@@ -15,6 +22,7 @@ pub struct Residuals {
     pub exec : bool,
     pub outpath: String,
     pub run_num: String,
+    pub z: Vec<f64>,
     inpath: String,
     infile: String,
 }

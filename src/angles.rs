@@ -1,10 +1,10 @@
-use crate::types::*;
 use nalgebra as na;
 use na::matrix;
 use crate::parser::Config;
 use std::f64::consts::PI;
 use std::fs::File;
 use std::io::{BufWriter, Write};
+use crate::Event;
 
 fn get_eigenvector(x: &Vec<f64>, y: &Vec<f64>, z: &Vec<f64>) -> nalgebra::RowVector3<f64>{
         let x_mat = matrix![
