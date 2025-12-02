@@ -34,6 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (event_nums, x, y, z, events): (Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<f64>, Vec<Event>) = parser::parse_align(&config)?;
 
     angles::calculate_angles(&config,&event_nums, &x, &y, &z, &events)?;
+    println!["Done angles"];
 
     Ok(())
 }

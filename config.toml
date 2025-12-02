@@ -13,7 +13,7 @@ outpath = "/home/me/syncthing/homework/lab/residual_output"
 run_num = "4162_4177"
 
 # set true to calculate residuals and align GEMs
-exec = true
+exec = false
 
 [angles]
 #set path to output
@@ -22,6 +22,6 @@ outpath = "/home/me/syncthing/homework/lab/angles_output"
 run_num = "4162_4177"
 
 # set true to calculate angle distribution
-exec = false
+exec = true
 
 

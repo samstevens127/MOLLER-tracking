@@ -47,7 +47,6 @@ pub fn parse_align(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<
 
     let file = format!("{}/x_y_corrected_{}.txt", config.residuals.outpath, config.residuals.run_num);
 
-    println!["Calculating angles from '{}'", file];
 
     let mut reader = BufReader::new(File::open(file).unwrap());
 
@@ -66,22 +65,26 @@ pub fn parse_align(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<
         let mut x_events: Vec<f64> = Vec::with_capacity(3);
         let mut y_events: Vec<f64> = Vec::with_capacity(3);
 
+        if reader.read_line(&mut line)? == 0 {
+            break;
+        }
+
         let data: Vec<&str> = line.split_whitespace().collect();
 
         let event_num: u32 = match data[0].parse() {Ok(v) => v, Err(_) => break};
         let x_1: f64 = match data[1].parse::<f64>() {Ok(v) => v, Err(_) => break};
         let y_1: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let z_1: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let x_2: f64 = match data[1].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let y_2: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let z_2: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let x_3: f64 = match data[1].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let y_3: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let z_3: f64 = match data[2].parse::<f64>() {Ok(v) => v, Err(_) => break};
-        let hadc: u16      = match data[5].parse() {Ok(v) => v, Err(_) => break};
-        let ladc: u16      = match data[6].parse() {Ok(v) => v, Err(_) => break};
-        let run_num: u16   = match data[7].parse() {Ok(v) => v, Err(_) => break};
-        let hv: u16        = match data[8].parse() {Ok(v) => v, Err(_) => break};
+        let z_1: f64 = match data[3].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let x_2: f64 = match data[4].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let y_2: f64 = match data[5].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let z_2: f64 = match data[6].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let x_3: f64 = match data[7].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let y_3: f64 = match data[8].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let z_3: f64 = match data[9].parse::<f64>() {Ok(v) => v, Err(_) => break};
+        let hadc: u16      = match data[10].parse() {Ok(v) => v, Err(_) => break};
+        let ladc: u16      = match data[11].parse() {Ok(v) => v, Err(_) => break};
+        let run_num: u16   = match data[12].parse() {Ok(v) => v, Err(_) => break};
+        let hv: u16        = match data[13].parse() {Ok(v) => v, Err(_) => break};
 
         x_events.push(x_1);
         x_events.push(x_2);
