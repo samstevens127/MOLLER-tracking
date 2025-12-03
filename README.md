@@ -2,7 +2,7 @@
 
 ## What this does.
 
-Takes input data with 9 columns in the format (event num, x, y, x_charge, y_charge, hadc, ladc, run_num, high_voltage).
+Takes input data with 9 columns in the format (event num, x, y, x_charge, y_charge, hadc, ladc, run_num, high_voltage). (output of Sorting.C)
 
 Aligns the GEM planes to improve residuals, then output the corrected hit positions and residuals to an output directory specified in `config.toml`.
 
