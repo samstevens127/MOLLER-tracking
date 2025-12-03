@@ -169,6 +169,6 @@ pub fn align_gems(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f
         writeln!(corrected_writer, "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t", event_nums[i], x_vals[i][0],y_vals[i][0],z[0], x_vals[i][1],y_vals[i][1],z[1], x_vals[i][2],y_vals[i][2],z[2], events[i].hadc,events[i].ladc,events[i].hv,events[i].run_num)?;
     }
     writeln!(residuals_writer, "event_nums\tx_err_1\ty_err_1\tz_1\tx_err_2\ty_err_2\tz_2\tx_err_3\ty_err_3\tz_3\t")?;
-    //writeln!(corrected_writer, "event_nums\tx1\ty1\tz1\tx2\ty2\tz2\tx3\ty3\tz3\thadc\tladc\thv\trun_num")?;
+    writeln!(corrected_writer, "event_nums\tx1\ty1\tz1\tx2\ty2\tz2\tx3\ty3\tz3\thadc\tladc\thv\trun_num")?;
     Ok((event_nums, x_vals, y_vals, events))
 }

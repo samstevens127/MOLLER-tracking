@@ -42,12 +42,10 @@ pub fn parse_config() -> Result<Config, Box<dyn std::error::Error>>
 }
 
 pub fn parse_align(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<f64>, Vec<Event>), Box<dyn std::error::Error>> {
-    let mut line = String::new();
 
     let file = format!("{}/x_y_corrected_{}.txt", config.residuals.outpath, config.residuals.run_num);
 
-
-    let mut reader = BufReader::new(File::open(file).unwrap());
+    let reader = BufReader::new(File::open(file)?);
 
     let mut event_nums: Vec<u32> = Vec::new();
 
@@ -57,16 +55,18 @@ pub fn parse_align(config: &Config) -> Result<(Vec<u32>, Vec<Vec<f64>>, Vec<Vec<
 
     let mut adc: Vec<Event> = Vec::new();
 
-    loop {
-        line.clear();
-        reader.read_line(&mut line)?;
+    let mut lines = reader.lines().peekable();
+
+    while let Some(line) = lines.next() {
+        if lines.peek().is_none() {
+            break;
+        }
+
+        let line = line?;
 
         let mut x_events: Vec<f64> = Vec::with_capacity(3);
         let mut y_events: Vec<f64> = Vec::with_capacity(3);
 
-        if reader.read_line(&mut line)? == 0 {
-            break;
-        }
 
         let data: Vec<&str> = line.split_whitespace().collect();
 
