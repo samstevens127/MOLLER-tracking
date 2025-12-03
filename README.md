@@ -10,16 +10,18 @@ Calculates the angle distribution of the hits.
 
 ## Installation.
 ```
-  git clone https://github.com/samstevens127/MOLLER-tracking.git
-  cd MOLLER-tracking
-  cargo build --release
+  $ git clone https://github.com/samstevens127/MOLLER-tracking.git
+  $ cd MOLLER-tracking
+  $ cargo build --release
 ```
 
 ## Use
 
 Edit the configuration file in `config.toml`
 
-then run `./release/residuals`
+run with:
+
+```$ ./release/residuals```
 
 `plotting.cc` is there if you want to check the residuals after correction.
 
