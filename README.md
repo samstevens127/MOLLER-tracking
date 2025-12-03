@@ -20,8 +20,9 @@ Calculates the angle distribution of the hits.
 Edit the configuration file in `config.toml`
 
 run with:
-
-```$ ./release/residuals```
+```
+$ ./release/residuals
+```
 
 `plotting.cc` is there if you want to check the residuals after correction.
 
