@@ -24,7 +24,6 @@ pub struct Residuals {
     pub run_num: String,
     pub z: Vec<f64>,
     inpath: String,
-    infile: String,
 }
 
 #[derive(Debug,Deserialize)]
@@ -140,9 +139,9 @@ pub fn parse_data(config: &Config) -> (Vec<u32>, Vec<Vec<f64>>,Vec<Vec<f64>>, Ve
 {
 
         let filenames = vec![
-        format!("{}/output_file_run_{}_x1y1.txt",config.residuals.inpath, config.residuals.infile),
-        format!("{}/output_file_run_{}_x2y2.txt",config.residuals.inpath, config.residuals.infile),
-        format!("{}/output_file_run_{}_x3y3.txt",config.residuals.inpath, config.residuals.infile)
+        format!("{}/output_file_run_{}_x1y1.txt",config.residuals.inpath, config.residuals.run_num),
+        format!("{}/output_file_run_{}_x2y2.txt",config.residuals.inpath, config.residuals.run_num),
+        format!("{}/output_file_run_{}_x3y3.txt",config.residuals.inpath, config.residuals.run_num)
     ];
 
 
